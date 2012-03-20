@@ -46,7 +46,6 @@ LOAD ./source/system.o
 LOAD ./source/time.o
 LOAD ./source/uart.o
 LOAD ./source/util.o
-LOAD ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o
 LOAD /usr/lib/gcc/avr/4.6.3/avr5/libgcc.a
 LOAD /usr/lib/gcc/avr/4.6.3/../../../../avr/lib/avr5/libc.a
 LOAD /usr/lib/gcc/avr/4.6.3/avr5/libgcc.a
@@ -256,7 +255,6 @@ LOAD /usr/lib/gcc/avr/4.6.3/avr5/libgcc.a
                 0x0000000000000c8e                __vector_13
  .text          0x0000000000000e9a       0x16 ./source/util.o
                 0x0000000000000e9a                BCD_to_Bin
- .text          0x0000000000000eb0        0x0 ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o
  .text          0x0000000000000eb0        0x0 /usr/lib/gcc/avr/4.6.3/avr5/libgcc.a(_udivmodqi4.o)
  .text          0x0000000000000eb0        0x0 /usr/lib/gcc/avr/4.6.3/avr5/libgcc.a(_udivmodhi4.o)
  .text          0x0000000000000eb0        0x0 /usr/lib/gcc/avr/4.6.3/avr5/libgcc.a(_divmodhi4.o)
@@ -319,7 +317,6 @@ LOAD /usr/lib/gcc/avr/4.6.3/avr5/libgcc.a
  .data          0x000000000080009d        0x0 ./source/time.o
  .data          0x000000000080009d       0x7a ./source/uart.o
  .data          0x0000000000800117        0x0 ./source/util.o
- .data          0x0000000000800117        0x0 ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o
  .data          0x0000000000800117        0x0 /usr/lib/gcc/avr/4.6.3/avr5/libgcc.a(_udivmodqi4.o)
  .data          0x0000000000800117        0x0 /usr/lib/gcc/avr/4.6.3/avr5/libgcc.a(_udivmodhi4.o)
  .data          0x0000000000800117        0x0 /usr/lib/gcc/avr/4.6.3/avr5/libgcc.a(_divmodhi4.o)
@@ -347,7 +344,6 @@ LOAD /usr/lib/gcc/avr/4.6.3/avr5/libgcc.a
  .bss           0x000000000080011b        0xb ./source/time.o
  .bss           0x0000000000800126        0x0 ./source/uart.o
  .bss           0x0000000000800126        0x0 ./source/util.o
- .bss           0x0000000000800126        0x0 ./.metadata/.plugins/org.eclipse.cdt.make.core/specs.o
  .bss           0x0000000000800126        0x0 /usr/lib/gcc/avr/4.6.3/avr5/libgcc.a(_udivmodqi4.o)
  .bss           0x0000000000800126        0x0 /usr/lib/gcc/avr/4.6.3/avr5/libgcc.a(_udivmodhi4.o)
  .bss           0x0000000000800126        0x0 /usr/lib/gcc/avr/4.6.3/avr5/libgcc.a(_divmodhi4.o)
