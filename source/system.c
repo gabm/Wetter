@@ -3,6 +3,7 @@
 static uint8_t uiActiveSector;
 static uint16_t uiDataPtr;
 
+
 /**
  * Inits the Latches to all-Zero values.
  * This should be done once.

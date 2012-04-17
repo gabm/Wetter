@@ -6,151 +6,181 @@
  */
 #include "com.h"
 
-void com_open_port(const char cDirection)
+volatile unsigned char cDataReq =0;
+unsigned char com_receive_buffer[MAX_CHUNK_SIZE];
+unsigned char com_send_buffer[MAX_CHUNK_SIZE];
+
+void com_wait_low()
 {
-	adr_set(NET_ADR,3);
-	BUS_DDR = cDirection;
-	BUS_PORT = ~cDirection;
+	loop_until_bit_is_clear(BUS_PIN, COM_SCK_IN);
 }
 
-void com_close_port()
+void com_wait_high()
 {
-	//configure bus input & pull ups
+	loop_until_bit_is_set(BUS_PIN, COM_SCK_IN);
+}
+
+void com_send_ack()
+{
+	cbi(BUS_PORT,COM_SCK_OUT);
+	com_wait_high();
+	sbi(BUS_PORT,COM_SCK_OUT);
+}
+void com_mark_active_and_wait_ack()
+{
+	cbi(BUS_PORT,COM_SCK_OUT);
+	com_wait_low();
+	sbi(BUS_PORT, COM_SCK_OUT);
+	com_wait_high();
+}
+
+void com_set_command(unsigned char cCommand)
+{
+
+	CMD_PORT = (CMD_PORT & ~(0xC0)) | (cCommand << 6);
+
+	com_mark_active_and_wait_ack();
+
+
+	//after receive set to idle
+	CMD_PORT = (CMD_PORT & ~(0xC0)) | 0x00;
+}
+
+void com_connect()
+{
+	// set address
+	adr_set(NET_ADR,3);
+
+	//SCK IN as input and pull up
+	cbi(BUS_DDR, COM_SCK_IN);
+	sbi(BUS_PORT, COM_SCK_IN);
+
+	//SCK out as output and high
+	sbi(BUS_DDR, COM_SCK_OUT);
+	sbi(BUS_PORT, COM_SCK_OUT);
+
+	//CMD as output and low
+	sbi(CMD_DDR, CMD_PIN_0);
+	cbi(CMD_PORT, CMD_PIN_0);
+
+	sbi(CMD_DDR, CMD_PIN_1);
+	cbi(CMD_PORT, CMD_PIN_1);
+
+	com_config(BUS_INPUT);
+
+
+	com_mark_active_and_wait_ack();
+
+
+}
+
+void com_disconnect()
+{
+	adr_set(0,3);
 	BUS_DDR = 0x00;
 	BUS_PORT = 0xFF;
 
-	adr_set(0x00, 3);
+	cbi(CMD_DDR, CMD_PIN_0);
+	sbi(CMD_PORT, CMD_PIN_0);
 
-	bus_input();
+	cbi(CMD_DDR, CMD_PIN_1);
+	sbi(CMD_PORT, CMD_PIN_1);
+	_delay_ms(10);
+}
+
+void com_config(char cDirection)
+{
+	if (cDirection == BUS_OUTPUT)
+	{
+		BUS_DDR |= 0x0F;
+		BUS_PORT &= ~(0x0F);
+	} else {
+		BUS_DDR &= ~(0x0F);
+		BUS_PORT |= 0x0F;
+	}
 }
 
 void com_init()
 {
 	DDRC = 0x00;
 	PORTC = 0xFF;
+
+	//external interrupt on falling edge
+	cbi(MCUCR,ISC10);
+	sbi(MCUCR,ISC11);
+
+	//set int pin as input
+	sbi(COM_INT_PORT,COM_INT_PIN);
+	cbi(COM_INT_DDR,COM_INT_PIN);
+
+	//enable external interrupt 1
+	sbi(GICR,INT1);
 }
 
-
-void com_write_byte(const char cData, uint8_t uiStatus)
+ISR(INT1_vect)
 {
-	//clear last 4 bytes
-	BUS_PORT &= ~(0x0F);
-
-	//write high nibble
-	BUS_PORT |= 0x0F & (cData >> 4);
-
-	//signal that nibble is valid
-	sbi(OUT_SIG_PORT,OUT_SIG_BYTE);
-
-	//wait for ack and clear valid mark
-	loop_until_bit_is_set(IN_SIG_PIN, IN_SIG_BYTE);
-	cbi(OUT_SIG_PORT,OUT_SIG_BYTE);
-
-	//if this is the last bit, show it to the slave
-	if (uiStatus == STATUS_LAST_BYTE)
-		cbi(OUT_SIG_PORT,OUT_SIG_CHUNK);
-
-	//clear output
-	BUS_PORT &= ~(0x0F);
-
-	//write low nibbles
-	BUS_PORT |= 0x0F & cData;
-
-	//signal that nibble is valid
-	sbi(OUT_SIG_PORT, OUT_SIG_BYTE);
-
-	//wait for ack and clear valid mark
-	loop_until_bit_is_set(IN_SIG_PIN, IN_SIG_BYTE);
-	cbi(OUT_SIG_PORT, OUT_SIG_BYTE);
+	cDataReq =1;
+	cbi(GICR,INT1);
 }
 
-char com_read_byte()
+void com_write_nibble(const unsigned char cData)
 {
-	char result = 0x00;
+	BUS_PORT = (BUS_PORT & 0xF0) | (0x0F & cData);
 
-	//wait for signal of new byte
-	loop_until_bit_is_set(IN_SIG_PIN, IN_SIG_BYTE);
+	com_mark_active_and_wait_ack();
+}
 
-	//first receive high nibble
-	result = (( 0x0F & BUS_PIN) << 4);
+unsigned char com_read_nibble()
+{
+	unsigned char cResult = 0x00;
+	com_wait_low();
+	cResult |= (0x0F & BUS_PIN);
+	com_send_ack();
+	return cResult;
+}
 
-	//indicate we received it
-	sbi(OUT_SIG_PORT, OUT_SIG_BYTE);
+void com_write_byte(const unsigned char cData)
+{
+	com_write_nibble(cData >> 4);
+	com_write_nibble(cData);
+}
 
-	//wait for low bit PC6, indicating the next nibble is on the way
-	loop_until_bit_is_clear(IN_SIG_PIN, IN_SIG_BYTE);
-
-	cbi(OUT_SIG_PORT, OUT_SIG_BYTE);
-
-	//wait for next nibble
-	loop_until_bit_is_set(IN_SIG_PIN, IN_SIG_BYTE);
-
-	result |= (0x0F & PINC);
-
-	//indicate we received it
-	sbi(OUT_SIG_PORT, OUT_SIG_BYTE);
-
-	//wait for low bit, indicating the byte is complete
-	loop_until_bit_is_clear(IN_SIG_PIN, IN_SIG_BYTE);
-
-	cbi(OUT_SIG_PORT,OUT_SIG_BYTE);
-
-	return result;
+unsigned char com_read_byte()
+{
+	unsigned char cResult = 0x00;
+	cResult |= (com_read_nibble() << 4);
+	cResult |= com_read_nibble();
+	return cResult;
 }
 
 void com_send_chunk(uint8_t uiLen)
 {
-	//indicate starting chunk & wait for begin
-	sbi(OUT_SIG_PORT,OUT_SIG_CHUNK);
-	loop_until_bit_is_set(IN_SIG_PIN, IN_SIG_CHUNK);
-
 	unsigned char* itr = com_send_buffer;
-	uint8_t status = STATUS_NORMAL;
+	com_write_byte(uiLen);
+
 	for (uint8_t i =0; i<uiLen;i++)
 	{
-		if(i == uiLen-1)
-			status = STATUS_LAST_BYTE;
-		com_write_byte(*itr, status);
+		com_write_byte(*itr);
 		itr++;
-
 	}
-	loop_until_bit_is_clear(IN_SIG_PIN, IN_SIG_CHUNK);
 }
 
-void com_receive_chunk( uint8_t* uiLen )
+void com_receive_chunk( uint8_t* uiLen)
 {
+	//init and read first byte
 	unsigned char* itr = com_receive_buffer;
+	*uiLen = com_read_byte();
 
-	//wait for begin & indicate readiness
-	loop_until_bit_is_set(IN_SIG_PIN, IN_SIG_CHUNK);
-	sbi(OUT_SIG_PORT,OUT_SIG_CHUNK);
-
-	//receive max num chunks
+	//receive the proposed length of bytes
 	uint8_t i=0;
-	while(i<MAX_CHUNK_SIZE)
+	while(i < *uiLen)
 	{
-
 		*itr++ = com_read_byte();
 		i++;
-		if (bit_is_clear(IN_SIG_PIN, IN_SIG_CHUNK))
-			break;
-
 	}
-
-	cbi(OUT_SIG_PORT,OUT_SIG_CHUNK);
-	*uiLen = i;
 }
 
-void com_receive(uint8_t* uiLen)
+char com_check()
 {
-	com_open_port(BUS_INPUT);
-	com_receive_chunk(uiLen);
-	com_close_port();
-}
-
-void com_send(uint8_t uiLen)
-{
-	com_open_port(BUS_OUTPUT);
-	com_send_chunk(uiLen);
-	com_close_port();
+	return cDataReq;
 }

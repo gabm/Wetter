@@ -49,7 +49,7 @@ void uart_init(void)
 
 	uiCurrent = 0;
 
-	sei();
+	//sei();
 
 }
 static void uart_parse_req()

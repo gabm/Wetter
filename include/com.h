@@ -9,42 +9,56 @@
 #define COM_H_
 
 #include <avr/io.h>
-#include "system.h"
 #include "util.h"
-
-#define OUT_SIG_BYTE PC4
-#define OUT_SIG_CHUNK PC5
-#define IN_SIG_BYTE PC6
-#define IN_SIG_CHUNK PC7
+#include "system.h"
+#include "buffers.h"
 
 #define BUS_DDR DDRC
 #define BUS_PORT PORTC
 #define BUS_PIN PINC
 
-#define OUT_SIG_DDR DDRC
-#define OUT_SIG_PORT PORTC
-#define OUT_SIG_PIN PINC
-
-#define IN_SIG_DDR DDRC
-#define IN_SIG_PORT PORTC
-#define IN_SIG_PIN PINC
+#define COM_SCK_IN PC5
+#define COM_SCK_OUT PC4
 
 
-#define STATUS_NORMAL 0
-#define STATUS_LAST_BYTE 1
+#define COM_INT_DDR DDRD
+#define COM_INT_PORT PORTD
+#define COM_INT_PIN PD3
 
-#define BUS_OUTPUT 0b00111111
-#define BUS_INPUT 0b00110000
 
-#define MAX_CHUNK_SIZE 10
+#define CMD_PIN PINC
+#define CMD_PORT PORTC
+#define CMD_DDR DDRC
+
+#define CMD_PIN_0 PC6
+#define CMD_PIN_1 PC7
+
+#define BUS_OUTPUT 0xFF
+#define BUS_INPUT 0x00
+
+#define BYTE_WAITING_TIME_US 200
+
+
 
 #define NET_ADR 0b01000000
 
-unsigned char com_receive_buffer[MAX_CHUNK_SIZE];
-unsigned char com_send_buffer[MAX_CHUNK_SIZE];
+#define CMD_MA_IDLE 0x00
+#define CMD_MA_OUT 0x01
+#define CMD_MA_REQ 0x02
+#define CMD_END 0x03
+
+extern volatile unsigned char cDataReq;
 
 void com_init();
-void com_send(uint8_t uiLen);
-void com_receive(uint8_t* uiLen);
+void com_receive_chunk( uint8_t* uiLen );
+void com_send_chunk(uint8_t uiLen);
+
+void com_connect();
+void com_disconnect();
+
+void com_config(char cDirection);
+char com_check();
+
+void com_set_command(unsigned char cCommand);
 
 #endif /* COM_H_ */

@@ -169,6 +169,6 @@ uint16_t tmp_get(char cTmpID)
 
 	//disconnect
 	adr_set(0x00, 3);
-
+	_delay_ms(1);
 	return uiResult;
 }

@@ -10,9 +10,6 @@
  * a struct to hold parity error-counts
  */
 
-//globals
-volatile SDateTime oDateTime;
-
 //file-globals
 static volatile SDateTime oTempDateTime;
 static volatile SDCF77Parity oDCF77Parity;
@@ -135,7 +132,8 @@ static void time_parse(void)
 /**
  * Interrupt Service Routine for external Interrupt 1. Here we fill in the temp date.
  */
-ISR(INT1_vect)
+//ISR(INT1_vect)
+void isr()
 {
 	//uart_send("int");
 	//uart_send_char(uiTimer2Count);
