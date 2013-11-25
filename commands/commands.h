@@ -8,8 +8,8 @@
 #ifndef COMMANDS_H_
 #define COMMANDS_H_
 
-#include "buffers.h"
-#include "sensors.h"
+#include "../core/buffers.h"
+#include "../sensors/sensors.h"
 
 #define MAX_DATA_LENGTH 10
 typedef struct {

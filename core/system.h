@@ -11,8 +11,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include "util.h"
-#include "uart.h"
+#include "../util.h"
 
 
 //8-bit parallel bus

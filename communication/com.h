@@ -9,9 +9,9 @@
 #define COM_H_
 
 #include <avr/io.h>
-#include "util.h"
-#include "system.h"
-#include "buffers.h"
+#include "../util.h"
+#include "../core/system.h"
+#include "../core/buffers.h"
 
 #define BUS_DDR DDRC
 #define BUS_PORT PORTC
@@ -36,11 +36,8 @@
 #define BUS_OUTPUT 0xFF
 #define BUS_INPUT 0x00
 
-#define BYTE_WAITING_TIME_US 200
 
-
-
-#define NET_ADR 0b01000000
+#define COM_ADR 0b01000000
 
 #define CMD_MA_IDLE 0x00
 #define CMD_MA_OUT 0x01

@@ -7,7 +7,6 @@
 
 #include "net.h"
 
-#include "sensors.h"
 void net_receive()
 {
 	if (!com_check())

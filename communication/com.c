@@ -49,7 +49,7 @@ void com_set_command(unsigned char cCommand)
 void com_connect()
 {
 	// set address
-	adr_set(NET_ADR,3);
+	adr_set(COM_ADR,3);
 
 	//SCK IN as input and pull up
 	cbi(BUS_DDR, COM_SCK_IN);

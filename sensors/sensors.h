@@ -11,8 +11,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include "util.h"
-#include "system.h"
+#include "../util.h"
+#include "../core/system.h"
 
 //temperature sensor public interface
 //tmp_config(char) -> handle with care!

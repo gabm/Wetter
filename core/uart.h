@@ -10,9 +10,9 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "string.h"
+//#include "string.h"
 #include "system.h"
-#include "util.h"
+#include "../util.h"
 
 #define BAUD 9600UL      // Baudrate
 // Berechnungen
