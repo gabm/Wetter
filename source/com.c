@@ -106,21 +106,21 @@ void com_init()
 	PORTC = 0xFF;
 
 	//external interrupt on falling edge
-	cbi(MCUCR,ISC10);
-	sbi(MCUCR,ISC11);
+	cbi(MCUCR,ISC00);
+	sbi(MCUCR,ISC01);
 
 	//set int pin as input
 	sbi(COM_INT_PORT,COM_INT_PIN);
 	cbi(COM_INT_DDR,COM_INT_PIN);
 
 	//enable external interrupt 1
-	sbi(GICR,INT1);
+	sbi(GICR,INT0);
 }
 
-ISR(INT1_vect)
+ISR(INT0_vect)
 {
 	cDataReq =1;
-	cbi(GICR,INT1);
+	cbi(GICR,INT0);
 }
 
 void com_write_nibble(const unsigned char cData)

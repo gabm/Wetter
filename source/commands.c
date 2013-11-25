@@ -6,15 +6,12 @@
  */
 #include "commands.h"
 
-#include "uart.h"
-
 uint8_t cmd_parse()
 {
 	SPacket* pInPacket = (SPacket*)com_receive_buffer;
 	SPacket* pOutPacket = (SPacket*)com_send_buffer;
 
 	uint8_t uiLength =0;
-
 	switch (pInPacket->uiCommand)
 	{
 	case CMD_TEMPERATURE_1:
@@ -35,6 +32,7 @@ uint8_t cmd_parse()
 	case CMD_SNOW_DEPTH:
 	{
 		Snow_Depth_Data* SnowDepthData = (Snow_Depth_Data*)pOutPacket->pData;
+		*SnowDepthData = range_get();
 		uiLength += sizeof(Snow_Depth_Data);
 		break;
 	}

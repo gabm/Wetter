@@ -23,7 +23,7 @@
 
 #define COM_INT_DDR DDRD
 #define COM_INT_PORT PORTD
-#define COM_INT_PIN PD3
+#define COM_INT_PIN PD2
 
 
 #define CMD_PIN PINC

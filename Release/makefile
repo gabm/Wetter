@@ -74,7 +74,7 @@ Wetter.eep: Wetter.elf
 
 sizedummy: Wetter.elf
 	@echo 'Invoking: Print Size'
-	-avr-size --format=berkeley -t Wetter.elf
+	-avr-size --format=avr --mcu=atmega32 Wetter.elf
 	@echo 'Finished building: $@'
 	@echo ' '
 

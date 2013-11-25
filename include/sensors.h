@@ -26,4 +26,17 @@ uint16_t tmp_get(char cTmpID);
 uint16_t adc_read(uint8_t channel);
 void adc_init(void);
 
+
+//range defines
+#define RANGE_PORT PORTD
+#define RANGE_PIN  PIND
+#define RANGE_DDR  DDRD
+#define RANGE_TRIG PD3
+#define RANGE_ECHO PD6
+
+
+//range sensor
+void range_init(void);
+uint16_t range_get(void);
+
 #endif /* SENSORS_H_ */

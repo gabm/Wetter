@@ -21,7 +21,7 @@ void net_receive()
 	com_receive_chunk(&uiLen);
 	com_disconnect();
 	cDataReq = 0;
-	sbi(GICR,INT1);
+	sbi(GICR,INT0);
 
 	uiLen = cmd_parse();
 	net_send(uiLen);
