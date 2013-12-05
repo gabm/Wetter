@@ -12,25 +12,25 @@ unsigned char com_send_buffer[MAX_CHUNK_SIZE];
 
 void com_wait_low()
 {
-	loop_until_bit_is_clear(BUS_PIN, COM_SCK_IN);
+	loop_until_bit_is_clear(COM_PIN, COM_SCK_IN);
 }
 
 void com_wait_high()
 {
-	loop_until_bit_is_set(BUS_PIN, COM_SCK_IN);
+	loop_until_bit_is_set(COM_PIN, COM_SCK_IN);
 }
 
 void com_send_ack()
 {
-	cbi(BUS_PORT,COM_SCK_OUT);
+	cbi(COM_PORT,COM_SCK_OUT);
 	com_wait_high();
-	sbi(BUS_PORT,COM_SCK_OUT);
+	sbi(COM_PORT,COM_SCK_OUT);
 }
 void com_mark_active_and_wait_ack()
 {
-	cbi(BUS_PORT,COM_SCK_OUT);
+	cbi(COM_PORT,COM_SCK_OUT);
 	com_wait_low();
-	sbi(BUS_PORT, COM_SCK_OUT);
+	sbi(COM_PORT, COM_SCK_OUT);
 	com_wait_high();
 }
 
@@ -49,15 +49,15 @@ void com_set_command(unsigned char cCommand)
 void com_connect()
 {
 	// set address
-	adr_set(COM_ADR,3);
+	sys_adr_set(COM_ADR,3);
 
 	//SCK IN as input and pull up
-	cbi(BUS_DDR, COM_SCK_IN);
-	sbi(BUS_PORT, COM_SCK_IN);
+	cbi(COM_DDR, COM_SCK_IN);
+	sbi(COM_PORT, COM_SCK_IN);
 
 	//SCK out as output and high
-	sbi(BUS_DDR, COM_SCK_OUT);
-	sbi(BUS_PORT, COM_SCK_OUT);
+	sbi(COM_DDR, COM_SCK_OUT);
+	sbi(COM_PORT, COM_SCK_OUT);
 
 	//CMD as output and low
 	sbi(CMD_DDR, CMD_PIN_0);
@@ -76,9 +76,9 @@ void com_connect()
 
 void com_disconnect()
 {
-	adr_set(0,3);
-	BUS_DDR = 0x00;
-	BUS_PORT = 0xFF;
+	sys_adr_set(0,3);
+	COM_DDR = 0x00;
+	COM_PORT = 0xFF;
 
 	cbi(CMD_DDR, CMD_PIN_0);
 	sbi(CMD_PORT, CMD_PIN_0);
@@ -92,11 +92,11 @@ void com_config(char cDirection)
 {
 	if (cDirection == BUS_OUTPUT)
 	{
-		BUS_DDR |= 0x0F;
-		BUS_PORT &= ~(0x0F);
+		COM_DDR |= 0x0F;
+		COM_PORT &= ~(0x0F);
 	} else {
-		BUS_DDR &= ~(0x0F);
-		BUS_PORT |= 0x0F;
+		COM_DDR &= ~(0x0F);
+		COM_PORT |= 0x0F;
 	}
 }
 
@@ -125,7 +125,7 @@ ISR(INT0_vect)
 
 void com_write_nibble(const unsigned char cData)
 {
-	BUS_PORT = (BUS_PORT & 0xF0) | (0x0F & cData);
+	COM_PORT = (COM_PORT & 0xF0) | (0x0F & cData);
 
 	com_mark_active_and_wait_ack();
 }
@@ -134,7 +134,7 @@ unsigned char com_read_nibble()
 {
 	unsigned char cResult = 0x00;
 	com_wait_low();
-	cResult |= (0x0F & BUS_PIN);
+	cResult |= (0x0F & COM_PIN);
 	com_send_ack();
 	return cResult;
 }

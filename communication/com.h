@@ -9,13 +9,14 @@
 #define COM_H_
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include "../util.h"
 #include "../core/system.h"
 #include "../core/buffers.h"
 
-#define BUS_DDR DDRC
-#define BUS_PORT PORTC
-#define BUS_PIN PINC
+#define COM_DDR DDRC
+#define COM_PORT PORTC
+#define COM_PIN PINC
 
 #define COM_SCK_IN PC5
 #define COM_SCK_OUT PC4

@@ -1,16 +1,22 @@
 #include "main.h"
+
 #include "core/uart.h"
+#include "communication/com.h"
+#include "communication/net.h"
+#include "sensors/temperature.h"
+#include "sensors/range.h"
+
 
 int main(void)
 {
 	//init
-	adr_init();
+	sys_adr_init();
 	uart_init();
 	com_init();
 
 	//sensors
-	tmp_init(0x01);
-	tmp_init(0x02);
+	temp_init(0x01);
+	temp_init(0x02);
 	range_init();
 
 	sei();
