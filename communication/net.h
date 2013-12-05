@@ -9,7 +9,7 @@
 #define NET_H_
 #include "com.h"
 #include "../core/buffers.h"
-#include "../commands/commands.h"
+#include "../commands/parser.h"
 
 void net_send(uint8_t uiLen);
 void net_receive();

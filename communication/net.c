@@ -22,7 +22,7 @@ void net_receive()
 	cDataReq = 0;
 	sbi(GICR,INT0);
 
-	uiLen = cmd_parse();
+	uiLen = parser_parse();
 	net_send(uiLen);
 }
 void net_send(uint8_t uiLen)
