@@ -9,7 +9,7 @@
 
 int main(void)
 {
-	//init
+	// system init
 	sys_adr_init();
 	uart_init();
 	com_init();

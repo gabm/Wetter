@@ -26,5 +26,4 @@ uint8_t parser_parse()
 	pResponse->uiCommandID = pRequest->uiCommandID;
 	uiLength +=1;
 	return uiLength;
-
 }
