@@ -32,7 +32,7 @@ typedef struct {
 
 typedef struct {
 	uint8_t uiSensorID;
-	unsigned char pData[MAX_PACKET_LENGTH - 1];
+	unsigned char pData[MAX_SENSOR_READOUT_PACKET_LENGTH - 1];
 } SSensorReadoutPacket;
 
 ///////////////////////////////////////////////////////////////////
