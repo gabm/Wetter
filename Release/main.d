@@ -6,7 +6,9 @@ main.d: ../main.c ../main.h ../core/uart.h ../core/system.h \
  ../communication/../commands/sensors.h \
  ../communication/../commands/packets.h \
  ../communication/../commands/../core/buffers.h ../sensors/temperature.h \
- ../sensors/../core/system.h ../sensors/range.h ../sensors/../util.h
+ ../sensors/../core/system.h ../sensors/range.h ../sensors/../util.h \
+ ../sensors/../util/timeout.h ../sensors/../util/../util.h \
+ ../util/timeout.h
 
 ../main.h:
 
@@ -43,3 +45,9 @@ main.d: ../main.c ../main.h ../core/uart.h ../core/system.h \
 ../sensors/range.h:
 
 ../sensors/../util.h:
+
+../sensors/../util/timeout.h:
+
+../sensors/../util/../util.h:
+
+../util/timeout.h:

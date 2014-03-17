@@ -25,16 +25,26 @@ uint16_t range_get(void)
 	cbi(RANGE_PORT,RANGE_TRIG);
 
 	//wait for result
-
 	TCNT1 = 0x0000;
 	//wait for high val
+	//while(!(timeout_event() || bit_is_set(RANGE_PIN, RANGE_ECHO)));
 	loop_until_bit_is_set(RANGE_PIN, RANGE_ECHO);
+	//timeout_stop();
+
+	//if (timeout_event())
+		//return 0xFFFF;
+
 
 	//start timer with 1/8 prescaler
 	sbi(TCCR1B, CS11);
+	//timeout_start_ms(500);
+	//while(!(timeout_event() || bit_is_clear(RANGE_PIN, RANGE_ECHO)));
 	loop_until_bit_is_clear(RANGE_PIN, RANGE_ECHO);
 	cbi(TCCR1B, CS11);
+	//timeout_stop();
 
+	//if (timeout_event())
+		//return 0xFFFF;
 	//the factor 1.3 is from 1/6.441MHz*8
 	//58 comes from 58cm per µs
 	return TCNT1*1.3/58.0;

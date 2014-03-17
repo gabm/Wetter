@@ -12,6 +12,7 @@
 #include <util/delay.h>
 
 #include "../util.h"
+#include "../util/timeout.h"
 
 //range defines
 #define RANGE_PORT PORTD

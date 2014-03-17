@@ -41,6 +41,6 @@ typedef struct {
 #define SENSOR_ID_TEMPERATURE_2 2
 #define SENSOR_ID_TEMPERATURE_3 3
 #define SENSOR_ID_TEMPERATURE_4 4
-
+#define SENSOR_ID_SNOW_DEPTH 5
 
 #endif /* PACKETS_H_ */

@@ -9,18 +9,17 @@
 #define TIMEOUT_H_
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
+#include "../util.h"
 
-void timeout_init();
+void timeout_start(uint8_t uiTimeout);
+void timeout_stop();
 
+#define   TICKS_PER_MSEC (F_CPU/1024/255/1000)   /* ticks/sec with prescale /1024 */
 
-#define   TICKS_PER_SEC (F_CPU/1024)   /* ticks/sec with prescale /1024 */
-#define   TIMEOUT_TIME (1 * TICKS_PER_SEC) /* timeout: 1 second */
-#define   timeout_reset() do { TCNT1 = 0; } while (0)
-#define   timeout_event() (TCNT1 >= TIMEOUT_TIME)
+extern volatile uint8_t uiOverflow;
 
-
-extern uint16_t uiCurrentTimeout;
-#define   timeout_set(TIME_USEC) uiCurrentTimeout = TIME_USEC;
-
+#define timeout_start_ms(time_ms) timeout_start(time_ms*TICKS_PER_MSEC)
+#define timeout_event() uiOverflow == 1
 
 #endif /* TIMEOUT_H_ */

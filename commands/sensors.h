@@ -16,7 +16,6 @@ typedef uint16_t Temperature_Data_t;
 
 //snow depth
 typedef uint16_t Snow_Depth_Data_t;
-#define SENSOR_ID_SNOW_DEPTH 5
 
 
 uint8_t sensors_readout(SSensorReadoutPacket* pSensorRequest, SSensorReadoutPacket* pSensorResponse );

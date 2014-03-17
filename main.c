@@ -5,7 +5,7 @@
 #include "communication/net.h"
 #include "sensors/temperature.h"
 #include "sensors/range.h"
-
+#include "util/timeout.h"
 
 int main(void)
 {
